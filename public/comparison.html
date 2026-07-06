@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PathFinder 10 - Comparison Matrix</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/style.css?v=2">
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="min-h-screen text-white relative flex flex-col justify-between">
+  <!-- Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Navigation Header -->
+  <header class="w-full z-20 glass-panel border-b border-slate-800/80 sticky top-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="dashboard.html" class="flex items-center space-x-2">
+        <span class="text-xl font-black bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent text-shadow-neon">
+          PathFinder 10
+        </span>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex space-x-8 text-sm font-semibold tracking-wide text-slate-300">
+        <a href="dashboard.html" class="hover:text-white transition">Dashboard</a>
+        <a href="assessment.html" class="hover:text-cyan-400 transition">Assessment Quiz</a>
+        <a href="comparison.html" class="text-white border-b-2 border-indigo-500 pb-1">Comparison Matrix</a>
+        <a href="advisor.html" class="hover:text-violet-400 transition">Gemini Advisor</a>
+      </nav>
+
+      <!-- User Area -->
+      <div class="flex items-center space-x-4">
+        <span id="user-display-name" class="text-xs md:text-sm font-medium text-slate-300">Loading...</span>
+        <button id="logout-btn" class="px-3 py-1.5 bg-slate-900 border border-red-500/40 text-red-400 hover:bg-red-950/30 text-xs font-semibold rounded-lg transition duration-200">
+          Logout
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Mobile Nav Tray -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-30 glass-panel border-t border-slate-800/80 flex justify-around py-3 text-xs text-slate-400">
+    <a href="dashboard.html" class="flex flex-col items-center space-y-1 hover:text-white">
+      <span>🏠</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="assessment.html" class="flex flex-col items-center space-y-1 hover:text-cyan-400">
+      <span>📝</span>
+      <span>Quiz</span>
+    </a>
+    <a href="comparison.html" class="text-white flex flex-col items-center space-y-1">
+      <span>📊</span>
+      <span>Matrix</span>
+    </a>
+    <a href="advisor.html" class="flex flex-col items-center space-y-1 hover:text-violet-400">
+      <span>🤖</span>
+      <span>AI Advisor</span>
+    </a>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 mb-16 md:mb-0">
+    
+    <!-- Hero Greetings Section -->
+    <div class="mb-10 text-center md:text-left">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-transparent bg-gradient-to-r from-white via-indigo-100 to-slate-400 bg-clip-text">
+        Deep-Dive Career Matrix
+      </h2>
+      <p class="text-slate-400 text-sm md:text-base mt-2">
+        A direct, side-by-side technical evaluation of 10th-grade educational choices in Telangana.
+      </p>
+    </div>
+
+    <!-- Parameter Filter/Search -->
+    <div class="mb-8 p-4 glass-card rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="text-sm text-slate-300 font-medium">
+        💡 Hover over any comparison row to isolate its technical parameters. Click a column to lock its tilt highlight.
+      </div>
+      <div class="w-full md:w-auto">
+        <input type="text" id="matrix-search" placeholder="Search parameters (e.g. ECET, Salary)..." class="w-full md:w-64 glass-input p-2 px-4 rounded-xl text-sm">
+      </div>
+    </div>
+
+    <!-- Sprawling 3D Grid Layout Container -->
+    <div class="perspective-1000 preserve-3d space-y-8">
+      
+      <!-- Grid Column Header -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-stretch text-center font-bold tracking-wide">
+        <!-- Parameters Label -->
+        <div class="hidden md:flex items-center justify-start text-left text-sm text-indigo-300 uppercase tracking-widest pl-4">
+          Key Comparison metrics
+        </div>
+        
+        <!-- Intermediate Stream Card -->
+        <div id="col-header-intermediate" class="cascade-item glass-card glow-indigo rounded-2xl p-4 flex flex-col items-center justify-center border-b-4 border-indigo-500">
+          <span class="text-2xl mb-1">🎓</span>
+          <span class="text-base font-extrabold text-white">Intermediate</span>
+          <span class="text-xs text-indigo-300 mt-0.5">MPC / BiPC / CEC / HEC</span>
+        </div>
+        
+        <!-- Polytechnic Diploma Card -->
+        <div id="col-header-diploma" class="cascade-item glass-card glow-cyan rounded-2xl p-4 flex flex-col items-center justify-center border-b-4 border-cyan-500">
+          <span class="text-2xl mb-1">⚙️</span>
+          <span class="text-base font-extrabold text-white">Polytechnic Diploma</span>
+          <span class="text-xs text-cyan-300 mt-0.5">3 Years via TS POLYCET</span>
+        </div>
+        
+        <!-- ITI Trades Card -->
+        <div id="col-header-iti" class="cascade-item glass-card glow-emerald rounded-2xl p-4 flex flex-col items-center justify-center border-b-4 border-emerald-500">
+          <span class="text-2xl mb-1">🔧</span>
+          <span class="text-base font-extrabold text-white">ITI Trades</span>
+          <span class="text-xs text-emerald-300 mt-0.5">1-2 Years Vocational</span>
+        </div>
+      </div>
+
+      <!-- Matrix Comparison Rows -->
+      <div id="matrix-rows-container" class="space-y-6">
+        
+        <!-- Row 1: Duration -->
+        <div class="matrix-row cascade-item grid grid-cols-1 md:grid-cols-4 gap-6 items-stretch transition duration-300" data-search-keys="duration years length timeframe">
+          <div class="glass-card rounded-2xl p-4 flex items-center font-bold text-sm text-indigo-300 uppercase pl-6">
+            ⏱️ Course Duration
+          </div>
+          <div class="col-item-inter glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-indigo-300">Intermediate</span>
+            <strong class="text-white text-base">2 Years</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Standard 2-year academic program split into Junior and Senior Intermediate years.
+            </p>
+          </div>
+          <div class="col-item-diploma glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-cyan-300">Polytechnic Diploma</span>
+            <strong class="text-white text-base">3 Years</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Full-time 3-year technical program. Incorporates rigorous practical semesters.
+            </p>
+          </div>
+          <div class="col-item-iti glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-emerald-300">ITI Trades</span>
+            <strong class="text-white text-base">1 to 2 Years</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Vocational trades (e.g. Welder is 1 Year, Electrician & Fitter are 2 Years).
+            </p>
+          </div>
+        </div>
+
+        <!-- Row 2: Entrance Exams -->
+        <div class="matrix-row cascade-item grid grid-cols-1 md:grid-cols-4 gap-6 items-stretch transition duration-300" data-search-keys="entrance exams admissions marks polycet eapcet neet merit">
+          <div class="glass-card rounded-2xl p-4 flex items-center font-bold text-sm text-indigo-300 uppercase pl-6">
+            📝 Admission & Exams
+          </div>
+          <div class="col-item-inter glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-indigo-300">Intermediate</span>
+            <strong class="text-white text-base">Direct Merit-based</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Admission directly into junior colleges based on 10th standard GPA/GPA marks. No state entrance exams needed for entry.
+            </p>
+          </div>
+          <div class="col-item-diploma glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-cyan-300">Polytechnic Diploma</span>
+            <strong class="text-white text-base">TS POLYCET Exam</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Requires writing the state-level **TS POLYCET** entrance exam. Seats allocated based on exam rank counselor list.
+            </p>
+          </div>
+          <div class="col-item-iti glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-emerald-300">ITI Trades</span>
+            <strong class="text-white text-base">Direct Merit Counselling</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Direct entry. Admission is handled via state counseling processes based solely on 10th-grade board exam scores.
+            </p>
+          </div>
+        </div>
+
+        <!-- Row 3: Cost Analysis -->
+        <div class="matrix-row cascade-item grid grid-cols-1 md:grid-cols-4 gap-6 items-stretch transition duration-300" data-search-keys="cost fees money scholarship budget stipend price">
+          <div class="glass-card rounded-2xl p-4 flex items-center font-bold text-sm text-indigo-300 uppercase pl-6">
+            💰 Cost & Subsidies
+          </div>
+          <div class="col-item-inter glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-indigo-300">Intermediate</span>
+            <strong class="text-white text-base">Varies Heavily</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Extremely low in Gov colleges, but private corporate academies charges high tuition fees (₹50k - ₹1.5L per year).
+            </p>
+          </div>
+          <div class="col-item-diploma glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-cyan-300">Polytechnic Diploma</span>
+            <strong class="text-white text-base">Highly Subsidized</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Government fee structures are heavily subsidized (₹3,000 - ₹5,000/year). State scholarships available for eligible ranks.
+            </p>
+          </div>
+          <div class="col-item-iti glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-emerald-300">ITI Trades</span>
+            <strong class="text-white text-base">Absolute Lowest Cost</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Very minimal fees. Government ITI centers offer student stipends and free tool kit benefits during training.
+            </p>
+          </div>
+        </div>
+
+        <!-- Row 4: Theory vs Practical -->
+        <div class="matrix-row cascade-item grid grid-cols-1 md:grid-cols-4 gap-6 items-stretch transition duration-300" data-search-keys="theory practical balance training laboratory workshop classroom focus">
+          <div class="glass-card rounded-2xl p-4 flex items-center font-bold text-sm text-indigo-300 uppercase pl-6">
+            🔬 Practical Balance
+          </div>
+          <div class="col-item-inter glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-indigo-300">Intermediate</span>
+            <strong class="text-white text-base">80% Theory / 20% Lab</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Heavy emphasis on mathematical proofs, analytical scientific theory, and written assessments. Minimal lab experiments.
+            </p>
+          </div>
+          <div class="col-item-diploma glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-cyan-300">Polytechnic Diploma</span>
+            <strong class="text-white text-base">50% Theory / 50% Lab</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Perfect balance. Classroom theory is immediately backed by structural laboratory validation and workshop projects.
+            </p>
+          </div>
+          <div class="col-item-iti glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-emerald-300">ITI Trades</span>
+            <strong class="text-white text-base">20% Theory / 80% Workshop</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Almost entirely vocational. Intensive hands-on machinery training, plant operation drills, and tool safety workshops.
+            </p>
+          </div>
+        </div>
+
+        <!-- Row 5: Engineering Pathway -->
+        <div class="matrix-row cascade-item grid grid-cols-1 md:grid-cols-4 gap-6 items-stretch transition duration-300" data-search-keys="engineering lateral entry ecet btech eapcet degree skipping bypass">
+          <div class="glass-card rounded-2xl p-4 flex items-center font-bold text-sm text-indigo-300 uppercase pl-6">
+            🚀 B.Tech Engineering Path
+          </div>
+          <div class="col-item-inter glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-indigo-300">Intermediate</span>
+            <strong class="text-white text-base">Full 4-Year B.Tech</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Requires writing the **TG EAPCET** (or JEE) to get engineering seats. Complete a standard 4-year undergraduate syllabus.
+            </p>
+          </div>
+          <div class="col-item-diploma glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-cyan-300">Polytechnic Diploma</span>
+            <strong class="text-white text-base">3-Year B.Tech (Lateral Entry)</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Can write the **TS ECET** exam to gain direct **Lateral Entry admission** into the 2nd year of B.Tech, skipping the first year.
+            </p>
+          </div>
+          <div class="col-item-iti glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-emerald-300">ITI Trades</span>
+            <strong class="text-white text-base">Diploma Required First</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Must clear the ITI-to-Diploma bridge examinations first, or gain 2-year industrial experience, before lateral entry.
+            </p>
+          </div>
+        </div>
+
+        <!-- Row 6: Job Market -->
+        <div class="matrix-row cascade-item grid grid-cols-1 md:grid-cols-4 gap-6 items-stretch transition duration-300" data-search-keys="jobs railways loco pilot tgspdcl electric technician salary transco employer recruitment">
+          <div class="glass-card rounded-2xl p-4 flex items-center font-bold text-sm text-indigo-300 uppercase pl-6">
+            💼 Job Market Outlook
+          </div>
+          <div class="col-item-inter glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-indigo-300">Intermediate</span>
+            <strong class="text-white text-base">Degree Required First</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Almost zero direct employment pathways. Requires completing graduation (B.Tech, BSc, CA, MBBS) to sit for job recruitments.
+            </p>
+          </div>
+          <div class="col-item-diploma glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-cyan-300">Polytechnic Diploma</span>
+            <strong class="text-white text-base">Junior Engineer (JE)</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Immediate qualification for Junior Engineer posts in **TGSPDCL**, Transco, TSGENCO, SSC, and Indian Railways.
+            </p>
+          </div>
+          <div class="col-item-iti glass-card rounded-2xl p-6 text-sm text-slate-200">
+            <span class="font-bold text-white block mb-2 md:hidden text-emerald-300">ITI Trades</span>
+            <strong class="text-white text-base">Technician / ALP</strong>
+            <p class="text-slate-400 mt-2 text-xs leading-relaxed">
+              Immediate eligibility for Indian Railways **Assistant Loco Pilot (ALP)**, state electricity board line-technicians, and workshops.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Module 3: Career Horizons & Employment Metrics Dashboard -->
+    <div class="mt-16 space-y-12 animate-fade-in">
+      <h3 class="text-2xl font-black text-indigo-950 border-b border-slate-200/60 pb-3">
+        📊 Career Horizons & Employment Metrics Dashboard
+      </h3>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        
+        <!-- Employment Sector Breakdown (Govt vs Private) -->
+        <div class="glass-card glow-cyan rounded-3xl p-6 md:p-8 space-y-6">
+          <div>
+            <h4 class="text-xl font-bold">🏢 Employment Sector Distribution</h4>
+            <p class="text-xs text-slate-500 mt-1">Comparing percentage splits of Private Sector vs. Government/Public Sector jobs.</p>
+          </div>
+
+          <!-- Comparative Stat bars -->
+          <div class="space-y-4 text-xs font-semibold text-slate-700">
+            <!-- Polytechnic Diploma ECE/AIML -->
+            <div class="space-y-2">
+              <div class="flex justify-between items-center text-sm">
+                <span class="font-bold text-indigo-950">Polytechnic Diploma (ECE / AIML)</span>
+                <span class="text-indigo-600">45% Govt | 55% Private</span>
+              </div>
+              <div class="w-full h-4.5 bg-slate-200 rounded-full overflow-hidden flex">
+                <div class="bg-cyan-500 h-full text-[10px] text-white flex items-center justify-center font-bold" style="width: 45%">Govt</div>
+                <div class="bg-indigo-600 h-full text-[10px] text-white flex items-center justify-center font-bold" style="width: 55%">Private</div>
+              </div>
+              <p class="text-[10px] text-slate-400 font-medium">Govt roles: State Power grids (TGSPDCL), Railway technicians. Private roles: Tech consultancies, electronics assembly.</p>
+            </div>
+
+            <!-- ITI Trades Electrician/Fitter -->
+            <div class="space-y-2">
+              <div class="flex justify-between items-center text-sm">
+                <span class="font-bold text-indigo-950">ITI Technical Trades (Electrician / Fitter)</span>
+                <span class="text-indigo-600">65% Govt | 35% Private</span>
+              </div>
+              <div class="w-full h-4.5 bg-slate-200 rounded-full overflow-hidden flex">
+                <div class="bg-emerald-500 h-full text-[10px] text-white flex items-center justify-center font-bold" style="width: 65%">Govt</div>
+                <div class="bg-slate-700 h-full text-[10px] text-white flex items-center justify-center font-bold" style="width: 35%">Private</div>
+              </div>
+              <p class="text-[10px] text-slate-400 font-medium">Govt roles: Assistant Loco Pilot (ALP), public works contractors. Private roles: Factory automation, workshop operators.</p>
+            </div>
+
+            <!-- Traditional Intermediate Streams -->
+            <div class="space-y-2">
+              <div class="flex justify-between items-center text-sm">
+                <span class="font-bold text-indigo-950">Intermediate Tracks (MPC / BiPC / CEC)</span>
+                <span class="text-indigo-600">20% Govt | 80% Private</span>
+              </div>
+              <div class="w-full h-4.5 bg-slate-200 rounded-full overflow-hidden flex">
+                <div class="bg-indigo-500 h-full text-[10px] text-white flex items-center justify-center font-bold" style="width: 20%">Govt</div>
+                <div class="bg-indigo-950 h-full text-[10px] text-white flex items-center justify-center font-bold" style="width: 80%">Private</div>
+              </div>
+              <p class="text-[10px] text-slate-400 font-medium">Note: Requires graduation first. Govt roles: Civil Services (UPSC/TSPSC), banking. Private roles: Corporates, developers, consultants.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Salary Trend Matrix Table -->
+        <div class="glass-card glow-indigo rounded-3xl p-6 md:p-8 space-y-6">
+          <div>
+            <h4 class="text-xl font-bold">📈 Salary Trend Matrix (Annual CTC)</h4>
+            <p class="text-xs text-slate-500 mt-1">Comparing initial vs. long-term financial growth across the three pathways.</p>
+          </div>
+
+          <div class="overflow-x-auto text-xs">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider">
+                  <th class="py-2.5">Pathway / Career</th>
+                  <th class="py-2.5">Entry Level</th>
+                  <th class="py-2.5">Mid-Career</th>
+                  <th class="py-2.5">Senior Scale</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                <tr>
+                  <td class="py-3 font-semibold text-slate-900">🔧 ITI Trades (Fitter / Electrician)</td>
+                  <td class="py-3">₹1.4L - ₹1.8L</td>
+                  <td class="py-3">₹2.8L - ₹3.6L</td>
+                  <td class="py-3">₹5.0L - ₹7.0L</td>
+                </tr>
+                <tr>
+                  <td class="py-3 font-semibold text-slate-900">⚙️ Polytechnic Diploma (Engg branches)</td>
+                  <td class="py-3">₹2.2L - ₹3.0L</td>
+                  <td class="py-3">₹4.8L - ₹6.5L</td>
+                  <td class="py-3">₹8.0L - ₹12.0L</td>
+                </tr>
+                <tr>
+                  <td class="py-3 font-semibold text-slate-900">🚀 B.Tech (Lateral Entry via TS ECET)</td>
+                  <td class="py-3">₹4.5L - ₹6.5L</td>
+                  <td class="py-3">₹9.0L - ₹14.0L</td>
+                  <td class="py-3">₹18.0L - ₹30.0L</td>
+                </tr>
+                <tr>
+                  <td class="py-3 font-semibold text-slate-900">🎓 Intermediate Degree (MPC/BiPC/CEC)</td>
+                  <td class="py-3">₹3.0L - ₹4.5L</td>
+                  <td class="py-3">₹7.5L - ₹12.0L</td>
+                  <td class="py-3">₹15.0L - ₹25.0L</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-[10px] text-slate-400 italic leading-normal">
+            * Note: Intermediate path salaries are calculated after completion of subsequent graduation degrees (e.g. B.Tech/MBBS/B.Com/CA).
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Final Call to Action -->
+    <div class="mt-12 text-center">
+      <p class="text-slate-400 text-sm mb-4">Want specialized answers about specific local junior colleges, fee caps, or branch options?</p>
+      <button onclick="window.location.href='advisor.html'" class="px-8 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-sm font-semibold rounded-xl transition duration-200 shadow-lg glow-hover-indigo transform hover:-translate-y-0.5">
+        ⚡ Query the Gemini AI Career Advisor
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-6 text-center text-xs text-slate-500 border-t border-slate-900 z-10 glass-panel">
+    <p>© 2026 PathFinder 10. Built for 10th Class Students in Telangana, India.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js?v=2"></script>
+  <script src="js/comparison.js?v=2"></script>
+</body>
+</html>

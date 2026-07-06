@@ -1,0 +1,449 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* Core Setup */
+body {
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+  background-color: #fdfbf7;
+  color: #1e1b4b !important;
+}
+
+/* Force readable text colors globally for light cream theme */
+h1, h2, h3, h4, h5, h6, strong {
+  color: #1e1b4b !important;
+}
+
+.text-white {
+  color: #1e1b4b !important;
+}
+
+.text-indigo-300, .text-indigo-400 {
+  color: #4f46e5 !important;
+}
+
+.text-cyan-300, .text-cyan-400 {
+  color: #0891b2 !important;
+}
+
+.text-emerald-300, .text-emerald-400 {
+  color: #059669 !important;
+}
+
+.text-slate-200, .text-slate-300 {
+  color: #334155 !important;
+}
+
+.text-slate-400, .text-slate-500 {
+  color: #57657a !important;
+}
+
+/* Background Canvas */
+#bg-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -10;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, #fdfbf7 0%, #ede6d9 100%);
+}
+
+/* 3D Transform Utilities */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Glassmorphism System - Re-engineered for Cream light mode */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(100, 90, 80, 0.06);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 15px 35px 0 rgba(100, 90, 80, 0.06);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease-out;
+}
+
+/* Soft Accent Shadows for Light Mode */
+.glow-indigo {
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+.glow-emerald {
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.2);
+}
+
+/* Hover Accent Scales */
+.glow-hover-indigo:hover {
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.25);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+.glow-hover-emerald:hover {
+  box-shadow: 0 0 30px rgba(16, 185, 129, 0.25);
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.glow-hover-cyan:hover {
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.25);
+  border-color: rgba(6, 182, 212, 0.35);
+}
+
+/* Typography Shadows adjusted for contrast */
+.text-shadow-neon {
+  text-shadow: 0 0 8px rgba(99, 102, 241, 0.25);
+}
+
+.text-shadow-cyan {
+  text-shadow: 0 0 8px rgba(6, 182, 212, 0.25);
+}
+
+.text-shadow-emerald {
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.25);
+}
+
+/* 3D Quiz Card Flips */
+.quiz-card-container {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  perspective: 1000px;
+}
+
+.quiz-card-flipper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quiz-card-front, .quiz-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.quiz-card-back {
+  transform: rotateY(180deg);
+}
+
+/* Hologram Pulses & Scanners */
+@keyframes hologram-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+    filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.25));
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+    filter: drop-shadow(0 0 16px rgba(99, 102, 241, 0.35));
+  }
+}
+
+.holo-pulse {
+  animation: hologram-pulse 4s infinite ease-in-out;
+}
+
+/* Liquid Neon Progress Bar */
+.liquid-progress {
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-progress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(240, 235, 225, 0.4);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.6);
+}
+
+/* 3D Cascade Grid Transition classes */
+.cascade-item {
+  opacity: 0;
+  transform: translateY(60px) rotateX(15deg);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.cascade-item.visible {
+  opacity: 1;
+  transform: translateY(0) rotateX(0deg);
+}
+
+/* Glass inputs styling */
+.glass-input {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #0f172a;
+  transition: all 0.3s ease;
+}
+
+.glass-input:focus {
+  border-color: rgba(99, 102, 241, 0.6);
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.12);
+  outline: none;
+}
+
+/* Specific elements adjustments */
+.chip-btn {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #334155 !important;
+}
+
+.chip-btn:hover {
+  border-color: rgba(6, 182, 212, 0.5) !important;
+  color: #0891b2 !important;
+}
+
+/* Ensure comparison matrix columns stand out in light theme */
+.matrix-row .glass-card {
+  background: rgba(255, 255, 255, 0.65) !important;
+  color: #1e1b4b !important;
+}
+
+.matrix-row .glass-card p {
+  color: #475569 !important;
+}
+
+/* Header navigation styling override - Dominant pill aesthetics */
+header nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+header nav a {
+  color: #475569 !important; /* Soft dark grey for inactive */
+  padding: 0.5rem 1.1rem !important;
+  border-radius: 9999px !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  font-weight: 600 !important;
+  border-bottom: none !important;
+}
+
+header nav a:hover {
+  color: #4338ca !important;
+  background: rgba(99, 102, 241, 0.08) !important;
+}
+
+/* Style active navigation header links with color fills and a single broad bottom border matching the dashboard boxes */
+header nav a.text-white,
+header nav a[class*="border-b-2"] {
+  box-shadow: none !important;
+  border-radius: 12px 12px 0 0 !important;
+  padding-bottom: 0.35rem !important; /* adjust for bottom line thickness */
+}
+
+/* Dashboard Page Active (Indigo Accent) */
+header nav a[href="dashboard.html"].text-white,
+header nav a[href="dashboard.html"][class*="border-b-2"] {
+  color: #4f46e5 !important;
+  background: rgba(99, 102, 241, 0.1) !important;
+  border-bottom: 4px solid #4f46e5 !important;
+}
+
+/* Quiz Page Active (Cyan Accent) */
+header nav a[href="assessment.html"].text-white,
+header nav a[href="assessment.html"][class*="border-b-2"] {
+  color: #0891b2 !important;
+  background: rgba(6, 182, 212, 0.1) !important;
+  border-bottom: 4px solid #0891b2 !important;
+}
+
+/* Comparison Matrix Page Active (Emerald Accent) */
+header nav a[href="comparison.html"].text-white,
+header nav a[href="comparison.html"][class*="border-b-2"] {
+  color: #059669 !important;
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-bottom: 4px solid #059669 !important;
+}
+
+/* Gemini Advisor Page Active (Violet Accent) */
+header nav a[href="advisor.html"].text-white,
+header nav a[href="advisor.html"][class*="border-b-2"] {
+  color: #7c3aed !important;
+  background: rgba(124, 58, 237, 0.1) !important;
+  border-bottom: 4px solid #7c3aed !important;
+}
+
+/* Dominant Primary Buttons & CTA overrides (Logins, Chat submit, Quiz start/nav) */
+button[type="submit"],
+#submit-btn,
+#chat-send-btn,
+.path-card button,
+[class*="bg-indigo-600"],
+[class*="bg-cyan-600"],
+[class*="bg-emerald-600"] {
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%) !important;
+  box-shadow: 0 4px 15px rgba(49, 46, 129, 0.2) !important;
+  border: none !important;
+  font-weight: 600 !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+button[type="submit"]:hover,
+#submit-btn:hover,
+#chat-send-btn:hover,
+[class*="bg-indigo-600"]:hover,
+[class*="bg-cyan-600"]:hover,
+[class*="bg-emerald-600"]:hover {
+  background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%) !important;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.35) !important;
+  transform: translateY(-1.5px) !important;
+}
+
+/* Special style for Guest Bypass Button to keep it distinct but dominant */
+#guest-btn {
+  background: linear-gradient(135deg, #0891b2 0%, #155e75 100%) !important;
+  box-shadow: 0 4px 14px rgba(21, 94, 117, 0.2) !important;
+  border: none !important;
+  color: #ffffff !important;
+}
+#guest-btn:hover {
+  background: linear-gradient(135deg, #06b2d2 0%, #0891b2 100%) !important;
+  box-shadow: 0 6px 18px rgba(8, 145, 178, 0.35) !important;
+  transform: translateY(-1.5px) !important;
+}
+
+/* Dashboard Pathway Card Buttons */
+#path-card-inter button {
+  background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.22) !important;
+  border: none !important;
+}
+#path-card-inter button:hover {
+  background: linear-gradient(135deg, #818cf8 0%, #4f46e5 100%) !important;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.35) !important;
+}
+
+#path-card-diploma button {
+  background: linear-gradient(135deg, #0891b2 0%, #0369a1 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(8, 145, 178, 0.22) !important;
+  border: none !important;
+}
+#path-card-diploma button:hover {
+  background: linear-gradient(135deg, #06b2d2 0%, #0284c7 100%) !important;
+  box-shadow: 0 6px 18px rgba(8, 145, 178, 0.35) !important;
+}
+
+#path-card-iti button {
+  background: linear-gradient(135deg, #059669 0%, #064e3b 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.22) !important;
+  border: none !important;
+}
+#path-card-iti button:hover {
+  background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35) !important;
+}
+
+/* Quiz Option Buttons overrides for contrast */
+#q-options-front button,
+#q-options-back button {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #334155 !important;
+  font-weight: 500 !important;
+  transition: all 0.25s ease !important;
+}
+#q-options-front button:hover,
+#q-options-back button:hover {
+  background: rgba(99, 102, 241, 0.05) !important;
+  border-color: rgba(99, 102, 241, 0.35) !important;
+  color: #4f46e5 !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.06) !important;
+}
+
+/* Dialogue Balloons Area overrides for light Mode advisor */
+#chat-messages-container div p {
+  color: inherit !important;
+}
+
+#chat-messages-container .bg-indigo-950/30 {
+  background: rgba(238, 242, 255, 0.85) !important;
+  border-color: rgba(99, 102, 241, 0.25) !important;
+  color: #1e1b4b !important;
+}
+
+#chat-messages-container .bg-cyan-950/45 {
+  background: rgba(236, 254, 255, 0.85) !important;
+  border-color: rgba(6, 182, 212, 0.25) !important;
+  color: #0f172a !important;
+}
+
+/* Custom list items inside dashboard cards */
+.path-card ul li {
+  color: #334155 !important;
+}

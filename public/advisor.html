@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PathFinder 10 - Gemini AI Advisor</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/style.css?v=2">
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="min-h-screen text-white relative flex flex-col justify-between">
+  <!-- Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Navigation Header -->
+  <header class="w-full z-20 glass-panel border-b border-slate-800/80 sticky top-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="dashboard.html" class="flex items-center space-x-2">
+        <span class="text-xl font-black bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent text-shadow-neon">
+          PathFinder 10
+        </span>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex space-x-8 text-sm font-semibold tracking-wide text-slate-300">
+        <a href="dashboard.html" class="hover:text-white transition">Dashboard</a>
+        <a href="assessment.html" class="hover:text-cyan-400 transition">Assessment Quiz</a>
+        <a href="comparison.html" class="hover:text-emerald-400 transition">Comparison Matrix</a>
+        <a href="advisor.html" class="text-white border-b-2 border-indigo-500 pb-1">Gemini Advisor</a>
+      </nav>
+
+      <!-- User Area -->
+      <div class="flex items-center space-x-4">
+        <span id="user-display-name" class="text-xs md:text-sm font-medium text-slate-300">Loading...</span>
+        <button id="logout-btn" class="px-3 py-1.5 bg-slate-900 border border-red-500/40 text-red-400 hover:bg-red-950/30 text-xs font-semibold rounded-lg transition duration-200">
+          Logout
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Mobile Nav Tray -->
+  <div class="md:hidden fixed bottom-0 left-0 right-0 z-30 glass-panel border-t border-slate-800/80 flex justify-around py-3 text-xs text-slate-400">
+    <a href="dashboard.html" class="flex flex-col items-center space-y-1 hover:text-white">
+      <span>🏠</span>
+      <span>Dashboard</span>
+    </a>
+    <a href="assessment.html" class="flex flex-col items-center space-y-1 hover:text-cyan-400">
+      <span>📝</span>
+      <span>Quiz</span>
+    </a>
+    <a href="comparison.html" class="flex flex-col items-center space-y-1 hover:text-emerald-400">
+      <span>📊</span>
+      <span>Matrix</span>
+    </a>
+    <a href="advisor.html" class="text-white flex flex-col items-center space-y-1">
+      <span>🤖</span>
+      <span>AI Advisor</span>
+    </a>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 mb-16 md:mb-0 flex flex-col lg:flex-row gap-8 items-stretch h-[calc(100vh-140px)]">
+    
+    <!-- Holographic AI Side-Panel (Desktop only, renders 3D brain/core) -->
+    <div class="hidden lg:flex flex-col items-center justify-center glass-card glow-indigo rounded-3xl p-8 w-80 shrink-0 select-none relative overflow-hidden">
+      <!-- Grid pattern overlay -->
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_20%,rgba(3,7,18,0.6))] z-0"></div>
+      
+      <div class="relative z-10 text-center w-full flex flex-col items-center">
+        <h3 class="text-lg font-bold text-shadow-cyan tracking-wide bg-gradient-to-r from-cyan-400 to-violet-400 bg-clip-text text-transparent mb-2">
+          Holographic Advisor Core
+        </h3>
+        <p class="text-xs text-slate-400 max-w-[200px] mx-auto leading-relaxed mb-6">
+          Synchronized to the Gemini-2.5-Flash cognitive engine.
+        </p>
+
+        <!-- 3D Hologram Canvas -->
+        <div class="w-56 h-56 relative flex items-center justify-center">
+          <canvas id="hologram-canvas" class="w-full h-full"></canvas>
+          <div id="holo-glow" class="absolute w-24 h-24 rounded-full bg-cyan-500/20 blur-xl animate-pulse pointer-events-none"></div>
+        </div>
+
+        <div class="mt-6 flex flex-col space-y-2 text-xs font-semibold w-full px-4">
+          <div class="flex justify-between items-center bg-slate-950/40 p-2.5 rounded-xl border border-slate-900">
+            <span class="text-slate-400">Core Status:</span>
+            <span id="advisor-status-badge" class="text-emerald-400 flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+              ONLINE
+            </span>
+          </div>
+          <div id="ai-typing-indicator" class="hidden text-cyan-400 animate-pulse bg-cyan-950/20 p-2.5 rounded-xl border border-cyan-800/30">
+            🤖 Thinking & Compiling...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Messaging Suite -->
+    <div class="flex-grow glass-card glow-cyan rounded-3xl p-4 md:p-6 flex flex-col justify-between overflow-hidden relative">
+      
+      <!-- Top banner detailing context status -->
+      <div id="chat-header-banner" class="flex items-center justify-between pb-4 border-b border-slate-800/80 mb-4 text-xs">
+        <div class="flex items-center space-x-2">
+          <span class="text-cyan-400">🧠</span>
+          <span id="advisor-context-text" class="text-slate-300 font-medium">Standard Guidance Profile Active</span>
+        </div>
+        <div class="text-slate-500" id="api-mode-info">Detecting connection...</div>
+      </div>
+
+      <!-- Dialogue Balloons Area -->
+      <div id="chat-messages-container" class="flex-grow overflow-y-auto space-y-4 pr-2 mb-4 max-h-[55vh] lg:max-h-[60vh]">
+        <!-- Welcome Message -->
+        <div class="flex items-start space-x-3 max-w-[85%]">
+          <div class="w-8 h-8 rounded-full bg-indigo-600/30 border border-indigo-400/50 flex items-center justify-center shrink-0">
+            🤖
+          </div>
+          <div class="p-4 bg-indigo-950/30 border border-indigo-500/20 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed shadow-md">
+            <p>Namaste! I am your <strong>PathFinder 10 Career Advisor</strong>. 🌟</p>
+            <p class="mt-2">I specialize in guiding 10th-grade students in Telangana. Whether you are curious about Intermediate streams (MPC/BiPC/CEC), Polytechnic Diplomas (TS POLYCET), or vocational ITI Trades, feel free to ask me anything!</p>
+            <p class="mt-2">How can I help you choose your career route today?</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Option Chips -->
+      <div id="suggested-chips" class="flex flex-wrap gap-2 mb-4">
+        <button class="chip-btn px-3.5 py-1.5 bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-xs text-slate-300 hover:text-cyan-300 rounded-full transition">
+          Is Masab Tank Polytechnic good?
+        </button>
+        <button class="chip-btn px-3.5 py-1.5 bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-xs text-slate-300 hover:text-cyan-300 rounded-full transition">
+          What is intermediate MPC vs BiPC?
+        </button>
+        <button class="chip-btn px-3.5 py-1.5 bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-xs text-slate-300 hover:text-cyan-300 rounded-full transition">
+          Tell me about ITI Fitter & Electrician.
+        </button>
+        <button class="chip-btn px-3.5 py-1.5 bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-xs text-slate-300 hover:text-cyan-300 rounded-full transition">
+          How does TS ECET lateral entry work?
+        </button>
+      </div>
+
+      <!-- Inputs Form panel -->
+      <form id="chat-input-form" class="flex items-center gap-3">
+        <input type="text" id="chat-user-input" required placeholder="Ask your question here (e.g. Can I join Railways after ITI?)..." class="flex-grow glass-input p-3.5 rounded-2xl text-sm" autocomplete="off">
+        <button type="submit" id="chat-send-btn" class="px-6 py-3.5 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 font-semibold text-sm rounded-2xl transition duration-200 glow-hover-cyan shrink-0 flex items-center gap-1.5">
+          <span>Send</span>
+          <span>✈️</span>
+        </button>
+      </form>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-6 text-center text-xs text-slate-500 border-t border-slate-900 z-10 glass-panel">
+    <p>© 2026 PathFinder 10. Built for 10th Class Students in Telangana, India.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js?v=2"></script>
+  <script src="js/advisor.js?v=2"></script>
+</body>
+</html>

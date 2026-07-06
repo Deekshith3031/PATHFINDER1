@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PathFinder 10 - Immersive 3D Career Navigator</title>
+  <!-- SEO Tags -->
+  <meta name="description" content="Choose your perfect path after 10th class in Telangana. Career guidance quiz and advisor for Intermediate, Diploma and ITI.">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/style.css?v=2">
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="min-h-screen text-slate-800 relative flex flex-col justify-between overflow-x-hidden">
+  
+  <!-- Immersive Full-Screen 3D Hero Scene Canvas -->
+  <canvas id="hero-canvas" class="fixed inset-0 w-full h-full -z-10 pointer-events-none"></canvas>
+
+  <!-- Navigation header (simple logo for landing) -->
+  <header class="w-full z-20 py-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div class="flex items-center">
+      <span class="text-2xl font-black bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-600 bg-clip-text text-transparent text-shadow-neon">
+        PathFinder 10
+      </span>
+    </div>
+  </header>
+
+  <!-- Split Pane Main Hero & Auth Layout -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-between py-8 lg:py-16 gap-12 z-10">
+    
+    <!-- Left Hero content section -->
+    <div class="w-full lg:w-1/2 text-left space-y-6 lg:pr-8 animate-fade-in">
+      <div class="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1.5 rounded-full text-xs font-bold text-indigo-600">
+        🎓 3D Career Navigator for Telangana Students
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-indigo-950">
+        Find Your Perfect <br>
+        <span class="bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-500 bg-clip-text text-transparent">Future Career</span>
+      </h1>
+      <p class="text-slate-600 text-sm md:text-base max-w-md leading-relaxed font-medium">
+        Navigate an immersive virtual university mapping Telangana's Board of Intermediate (MPC/BiPC/CEC), Polytechnic Diplomas (TS POLYCET), and hands-on ITI Trades.
+      </p>
+      
+      <!-- Key Streams Metrics -->
+      <div class="grid grid-cols-3 gap-4 border-t border-slate-200/60 pt-6 text-center sm:text-left max-w-md">
+        <div>
+          <span class="block text-xl md:text-2xl font-black text-indigo-600">MPC/BiPC</span>
+          <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Academics</span>
+        </div>
+        <div>
+          <span class="block text-xl md:text-2xl font-black text-cyan-600">Diploma</span>
+          <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">TS POLYCET</span>
+        </div>
+        <div>
+          <span class="block text-xl md:text-2xl font-black text-emerald-600">ITI</span>
+          <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Trades</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Login Glass Card Container -->
+    <div class="w-full lg:w-auto flex justify-center lg:justify-end perspective-1000 z-10">
+      <div id="auth-card" class="glass-card glow-indigo rounded-3xl p-8 md:p-10 w-full max-w-md preserve-3d">
+        
+        <!-- Welcome Logo inside card -->
+        <div class="text-center mb-6 preserve-3d transform translate-z-10">
+          <h2 class="text-2xl font-extrabold tracking-tight text-indigo-950">
+            Student Login
+          </h2>
+          <p class="text-xs text-slate-500 mt-1 font-semibold uppercase tracking-wider">
+            Access your 3D Dashboard
+          </p>
+        </div>
+
+        <!-- Error Banner -->
+        <div id="alert-box" class="hidden mb-4 p-3 rounded-lg text-sm bg-red-50 border border-red-200 text-red-700 text-center animate-pulse">
+          Error Message
+        </div>
+
+        <!-- Auth Form -->
+        <form id="auth-form" class="space-y-4 preserve-3d transform translate-z-10">
+          <!-- Display Name Field (Hidden by default for login) -->
+          <div id="name-field-group" class="hidden">
+            <label for="reg-name" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Full Name</label>
+            <input type="text" id="reg-name" placeholder="Enter your full name" class="w-full glass-input p-3 rounded-xl text-sm" autocomplete="name">
+          </div>
+
+          <div>
+            <label for="auth-email" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Email Address</label>
+            <input type="email" id="auth-email" required placeholder="name@example.com" class="w-full glass-input p-3 rounded-xl text-sm" autocomplete="email">
+          </div>
+
+          <div>
+            <label for="auth-password" class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Password</label>
+            <input type="password" id="auth-password" required placeholder="••••••••" class="w-full glass-input p-3 rounded-xl text-sm" autocomplete="current-password">
+          </div>
+
+          <button type="submit" id="submit-btn" class="w-full py-3 mt-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-sm font-semibold rounded-xl transition duration-300 shadow-lg glow-hover-indigo transform hover:-translate-y-0.5">
+            Sign In
+          </button>
+        </form>
+
+        <!-- Toggle Links -->
+        <div class="mt-6 text-center text-xs text-slate-500 preserve-3d transform translate-z-10">
+          <span id="toggle-text">Don't have an account?</span>
+          <button id="toggle-auth-mode" class="text-indigo-600 font-bold ml-1 hover:underline focus:outline-none">
+            Register here
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="relative flex py-4 items-center preserve-3d transform translate-z-10">
+          <div class="flex-grow border-t border-slate-300/60"></div>
+          <span class="flex-shrink mx-3 text-xs text-slate-400">OR</span>
+          <div class="flex-grow border-t border-slate-300/60"></div>
+        </div>
+
+        <!-- Guest Fallback Button -->
+        <button id="guest-btn" class="w-full py-3 bg-gradient-to-r from-cyan-600 to-indigo-600 text-white text-sm font-semibold rounded-xl transition duration-300 glow-hover-cyan preserve-3d transform translate-z-10 hover:-translate-y-0.5">
+          ⚡ Continue as Guest Student
+        </button>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-6 text-center text-xs text-slate-500 border-t border-slate-200/60 z-10 glass-panel">
+    <p>© 2026 PathFinder 10. Built for 10th Class Students in Telangana, India.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js?v=2"></script>
+  <script src="js/auth.js?v=2"></script>
+</body>
+</html>
