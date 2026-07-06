@@ -165,51 +165,98 @@ An in-person board interview in New Delhi evaluating your analytical ability, me
     return res.json({ text: responseText });
   }
 
-  // Real Gemini API Calling
+  // Real API Calling (OpenRouter or Google Gemini)
   try {
-    // Format messages array for Gemini
-    const contents = messages.map(msg => ({
-      role: msg.sender === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.text }]
-    }));
+    const isOpenRouter = apiKey.startsWith('sk-or-v1-');
+    let replyText = "";
 
-    // Inject quiz results into context for Gemini's awareness if provided
-    if (quizResults && contents.length === 1) {
-      const resultsText = `[Context: The student just took a career assessment. Results show: ${JSON.stringify(quizResults)}. Please incorporate this recommendation context naturally into your first greeting/advice.]`;
-      contents[0].parts[0].text = `${resultsText}\n\nUser Question: ${contents[0].parts[0].text}`;
-    }
+    if (isOpenRouter) {
+      // Format messages for Chat Completions (OpenRouter/OpenAI style)
+      const messagesToSend = [
+        { role: 'system', content: systemInstruction }
+      ];
 
-    const requestBody = {
-      contents: contents,
-      systemInstruction: {
-        parts: [{ text: systemInstruction }]
-      },
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 1000
+      messages.forEach((msg, idx) => {
+        const role = msg.sender === 'user' ? 'user' : 'assistant';
+        let content = msg.text;
+        
+        // Inject assessment results context into the first message
+        if (quizResults && idx === 0 && role === 'user') {
+          const resultsText = `[Context: The student just took a career assessment. Results show: ${JSON.stringify(quizResults)}. Please incorporate this recommendation context naturally into your first greeting/advice.]`;
+          content = `${resultsText}\n\nUser Question: ${content}`;
+        }
+        
+        messagesToSend.push({ role, content });
+      });
+
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`,
+          'HTTP-Referer': 'http://localhost:3001',
+          'X-Title': 'PathFinder 10'
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: messagesToSend,
+          temperature: 0.7,
+          max_tokens: 1000
+        })
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error('OpenRouter API Error details:', errText);
+        return res.status(response.status).json({ error: 'OpenRouter API Error', details: errText });
       }
-    };
 
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    });
+      const data = await response.json();
+      replyText = data.choices?.[0]?.message?.content || "Sorry, I couldn't generate a response. Please try again.";
+    } else {
+      // Native Google Gemini API Flow
+      const contents = messages.map(msg => ({
+        role: msg.sender === 'user' ? 'user' : 'model',
+        parts: [{ text: msg.text }]
+      }));
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error('Gemini API Error details:', errText);
-      return res.status(response.status).json({ error: 'Gemini API Error', details: errText });
+      if (quizResults && contents.length === 1) {
+        const resultsText = `[Context: The student just took a career assessment. Results show: ${JSON.stringify(quizResults)}. Please incorporate this recommendation context naturally into your first greeting/advice.]`;
+        contents[0].parts[0].text = `${resultsText}\n\nUser Question: ${contents[0].parts[0].text}`;
+      }
+
+      const requestBody = {
+        contents: contents,
+        systemInstruction: {
+          parts: [{ text: systemInstruction }]
+        },
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 1000
+        }
+      };
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error('Gemini API Error details:', errText);
+        return res.status(response.status).json({ error: 'Gemini API Error', details: errText });
+      }
+
+      const data = await response.json();
+      replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response. Please try again.";
     }
-
-    const data = await response.json();
-    const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't generate a response. Please try again.";
     
     res.json({ text: replyText });
   } catch (error) {
-    console.error('Error proxying to Gemini API:', error);
+    console.error('Error proxying to AI API:', error);
     res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
 });
