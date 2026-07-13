@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PathFinder 10 - About Us</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/style.css?v=3">
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="min-h-screen text-slate-800 relative flex flex-col justify-between overflow-x-hidden">
+  
+  <!-- Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Navigation Header -->
+  <header class="w-full z-20 glass-panel border-b border-slate-200/60 sticky top-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="dashboard.html" class="flex items-center space-x-2">
+        <span class="text-xl font-black bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-600 bg-clip-text text-transparent text-shadow-neon">
+          PathFinder 10
+        </span>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex space-x-8 text-sm font-semibold tracking-wide text-slate-500">
+        <a href="dashboard.html" class="hover:text-indigo-600 transition">Dashboard</a>
+        <a href="assessment.html" class="hover:text-cyan-600 transition">Assessment Quiz</a>
+        <a href="comparison.html" class="hover:text-emerald-600 transition">Comparison Matrix</a>
+        <a href="advisor.html" class="hover:text-violet-600 transition">Gemini Advisor</a>
+      </nav>
+
+      <!-- Return Button -->
+      <div>
+        <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-xs font-semibold rounded-xl transition duration-200 glow-hover-indigo transform hover:-translate-y-0.5 inline-block">
+          Return to Hub
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 z-10 animate-fade-in">
+    
+    <div class="glass-card glow-indigo rounded-3xl p-8 md:p-12 space-y-8">
+      <div class="text-center md:text-left space-y-4">
+        <span class="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1.5 rounded-full text-xs font-bold text-indigo-600">
+          🎓 Our Mission & Vision
+        </span>
+        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-indigo-950">
+          About PathFinder 10
+        </h1>
+        <p class="text-slate-600 text-sm md:text-base leading-relaxed">
+          PathFinder 10 is an interactive, immersive 3D Career Navigator designed specifically for 10th-grade students in Telangana, India. Transitioning from high school is a critical turning point, and our goal is to empower students with data-driven, localized information and personalized AI guidance to make confident educational decisions.
+        </p>
+      </div>
+
+      <hr class="border-slate-200/60">
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 bg-slate-50/50 border border-slate-100 rounded-2xl">
+          <span class="text-2xl">⚡</span>
+          <h3 class="font-bold text-indigo-950 mt-2">Personalized Quiz</h3>
+          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+            Our 10-question interest profiler evaluates core affinities and aligns students with the three major pathways in Telangana.
+          </p>
+        </div>
+        <div class="p-6 bg-slate-50/50 border border-slate-100 rounded-2xl">
+          <span class="text-2xl">📊</span>
+          <h3 class="font-bold text-indigo-950 mt-2">Deep-Dive Matrix</h3>
+          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+            Side-by-side technical evaluation of parameters like cost, exam stages (TS POLYCET, TS ECET), salary growth, and job sector splits.
+          </p>
+        </div>
+        <div class="p-6 bg-slate-50/50 border border-slate-100 rounded-2xl">
+          <span class="text-2xl">🤖</span>
+          <h3 class="font-bold text-indigo-950 mt-2">Gemini AI Advisor</h3>
+          <p class="text-xs text-slate-500 mt-1 leading-relaxed">
+            A state-of-the-art conversational guide leveraging Secure AI to answer queries about specific colleges, syllabus maps, and recruitment pathways.
+          </p>
+        </div>
+      </div>
+
+      <hr class="border-slate-200/60">
+
+      <div class="space-y-4">
+        <h2 class="text-xl font-bold text-indigo-950">Educational Pathways Mapped</h2>
+        <div class="space-y-3 text-sm">
+          <div class="flex items-start space-x-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 mt-1.5 shrink-0"></span>
+            <div>
+              <strong class="text-indigo-950">Intermediate Academics (2 Years)</strong>: Traditional general academic streams including MPC (Engineering), BiPC (Medical), CEC (Commerce), and HEC (Arts), preparing students for entrance exams like JEE, NEET, and TG EAPCET.
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-cyan-500 mt-1.5 shrink-0"></span>
+            <div>
+              <strong class="text-indigo-950">Polytechnic Diploma (3 Years)</strong>: Applied engineering streams giving students hands-on technical training via TS POLYCET and a direct lateral entry path to B.Tech 2nd year via TS ECET.
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span>
+            <div>
+              <strong class="text-indigo-950">ITI Vocational Trades (1-2 Years)</strong>: Rapid placement-oriented training in electrical, fitting, and computer trades, leading to immediate employment opportunities in state divisions (TGSPDCL, SCCL) and Indian Railways (Assistant Loco Pilot).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-6 text-center text-xs text-slate-500 border-t border-slate-200/60 z-10 glass-panel">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 PathFinder 10. Built for 10th Class Students in Telangana, India.</p>
+      <div class="flex space-x-6 font-semibold text-slate-400">
+        <a href="about.html" class="text-indigo-600 hover:text-indigo-600 transition">About Us</a>
+        <a href="contact.html" class="hover:text-indigo-600 transition">Contact Us</a>
+        <a href="privacy.html" class="hover:text-indigo-600 transition">Privacy Policy</a>
+        <a href="terms.html" class="hover:text-indigo-600 transition">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js?v=3"></script>
+</body>
+</html>

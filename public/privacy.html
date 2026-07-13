@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PathFinder 10 - Privacy Policy</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="css/style.css?v=3">
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="min-h-screen text-slate-800 relative flex flex-col justify-between overflow-x-hidden">
+  
+  <!-- Background Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Navigation Header -->
+  <header class="w-full z-20 glass-panel border-b border-slate-200/60 sticky top-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="dashboard.html" class="flex items-center space-x-2">
+        <span class="text-xl font-black bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-600 bg-clip-text text-transparent text-shadow-neon">
+          PathFinder 10
+        </span>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex space-x-8 text-sm font-semibold tracking-wide text-slate-500">
+        <a href="dashboard.html" class="hover:text-indigo-600 transition">Dashboard</a>
+        <a href="assessment.html" class="hover:text-cyan-600 transition">Assessment Quiz</a>
+        <a href="comparison.html" class="hover:text-emerald-600 transition">Comparison Matrix</a>
+        <a href="advisor.html" class="hover:text-violet-600 transition">Gemini Advisor</a>
+      </nav>
+
+      <!-- Return Button -->
+      <div>
+        <a href="dashboard.html" class="px-4 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-xs font-semibold rounded-xl transition duration-200 glow-hover-indigo transform hover:-translate-y-0.5 inline-block">
+          Return to Hub
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 z-10 animate-fade-in">
+    
+    <div class="glass-card glow-indigo rounded-3xl p-8 md:p-12 space-y-8">
+      <div class="text-center md:text-left space-y-4">
+        <span class="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1.5 rounded-full text-xs font-bold text-indigo-600">
+          🛡️ User Data & Protection
+        </span>
+        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-indigo-950">
+          Privacy Policy
+        </h1>
+        <p class="text-slate-500 text-xs">Last Updated: July 2026</p>
+      </div>
+
+      <div class="space-y-6 text-slate-600 text-sm leading-relaxed">
+        <section class="space-y-2">
+          <h2 class="text-lg font-bold text-indigo-950">1. Information We Collect</h2>
+          <p>
+            PathFinder 10 collects minimal information to provide tailored career counseling services for 10th-grade students in Telangana. The data collected includes:
+          </p>
+          <ul class="list-disc list-inside pl-4 space-y-1">
+            <li><strong>Account Details</strong>: Name, email address, and authentication credentials via Firebase Auth.</li>
+            <li><strong>Quiz Profiles</strong>: Answers to career assessment questions and score logs.</li>
+            <li><strong>Guest Logs</strong>: Simulated session data stored locally on your device's browser (Local Storage).</li>
+          </ul>
+        </section>
+
+        <section class="space-y-2">
+          <h2 class="text-lg font-bold text-indigo-950">2. How We Use Your Data</h2>
+          <p>
+            Your information is processed strictly to:
+          </p>
+          <ul class="list-disc list-inside pl-4 space-y-1">
+            <li>Generate personalized pathway recommendations (Intermediate, Polytechnic, ITI).</li>
+            <li>Maintain user sessions and save assessment milestones.</li>
+            <li>Power custom Gemini AI advising recommendations based on your preferences.</li>
+          </ul>
+        </section>
+
+        <section class="space-y-2">
+          <h2 class="text-lg font-bold text-indigo-950">3. Data Security & Storage</h2>
+          <p>
+            We take your privacy seriously:
+          </p>
+          <ul class="list-disc list-inside pl-4 space-y-1">
+            <li>Firebase credentials and cloud database items are secured through official Firebase Web SDK rules.</li>
+            <li>We do not share, sell, or rent student details to third-party marketing networks.</li>
+            <li>Under Guest Mode, all data is retained 100% locally on your machine and can be cleared instantly.</li>
+          </ul>
+        </section>
+
+        <section class="space-y-2">
+          <h2 class="text-lg font-bold text-indigo-950">4. Third-Party Services</h2>
+          <p>
+            We utilize secure third-party services including Google Firebase (authentication and hosting config) and the Google Gemini AI proxy. These partners treat your data in strict compliance with their respective privacy standards.
+          </p>
+        </section>
+
+        <section class="space-y-2">
+          <h2 class="text-lg font-bold text-indigo-950">5. Contact Information</h2>
+          <p>
+            If you have any questions or data removal requests regarding this privacy statement, please submit your inquiries via our Contact Us portal.
+          </p>
+        </section>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full py-6 text-center text-xs text-slate-500 border-t border-slate-200/60 z-10 glass-panel">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 PathFinder 10. Built for 10th Class Students in Telangana, India.</p>
+      <div class="flex space-x-6 font-semibold text-slate-400">
+        <a href="about.html" class="hover:text-indigo-600 transition">About Us</a>
+        <a href="contact.html" class="hover:text-indigo-600 transition">Contact Us</a>
+        <a href="privacy.html" class="text-indigo-600 hover:text-indigo-600 transition">Privacy Policy</a>
+        <a href="terms.html" class="hover:text-indigo-600 transition">Terms of Service</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js?v=3"></script>
+</body>
+</html>

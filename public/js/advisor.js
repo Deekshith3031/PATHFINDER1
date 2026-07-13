@@ -63,6 +63,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Bind Clear Chat Button
+  const clearChatBtn = document.getElementById('clear-chat-btn');
+  if (clearChatBtn) {
+    clearChatBtn.addEventListener('click', () => {
+      chatHistory = [];
+      // Rebuild with just the welcome message
+      chatMessagesContainer.innerHTML = `
+        <div class="flex items-start space-x-3 max-w-[85%] animate-fade-in">
+          <div class="w-8 h-8 rounded-full bg-indigo-600/30 border border-indigo-400/50 flex items-center justify-center shrink-0">🤖</div>
+          <div class="p-4 bg-indigo-950/30 border border-indigo-500/20 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed shadow-md">
+            <p>Chat cleared! Ask me anything about your career options — Intermediate (MPC/BiPC/CEC), Polytechnic Diploma (TS POLYCET), or ITI Trades. 🌟</p>
+          </div>
+        </div>
+      `;
+      // Re-show chips
+      const chips = document.getElementById('suggested-chips');
+      if (chips) chips.style.display = 'flex';
+    });
+  }
+
   // Check backend configuration
   async function checkApiStatus() {
     try {
@@ -120,9 +140,32 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
       const reply = data.text;
 
-      // Append advisor reply bubble
+      // Append advisor reply bubble with typewriter streaming effect
       appendMessageBubble('ai', reply);
       chatHistory.push({ sender: 'ai', text: reply });
+
+      // Animate the ai-message-body content word-by-word
+      const allBubbles = chatMessagesContainer.querySelectorAll('.ai-message-body');
+      const lastBody = allBubbles[allBubbles.length - 1];
+      if (lastBody) {
+        const finalHTML = lastBody.innerHTML;
+        lastBody.innerHTML = '';
+        lastBody.style.minHeight = '1.5em';
+        // Stream words into the div with slight delay
+        const words = finalHTML.split(/(\s+)/);
+        let wordIdx = 0;
+        const streamInterval = setInterval(() => {
+          if (wordIdx < words.length) {
+            lastBody.innerHTML += words[wordIdx];
+            wordIdx++;
+            scrollToBottom();
+          } else {
+            clearInterval(streamInterval);
+            lastBody.style.minHeight = '';
+          }
+        }, 18);
+      }
+
       scrollToBottom();
 
     } catch (error) {
@@ -165,30 +208,42 @@ document.addEventListener('DOMContentLoaded', () => {
       ? "flex items-start space-x-3 max-w-[85%] ml-auto justify-end" 
       : "flex items-start space-x-3 max-w-[85%]";
 
-    // Format markdown bold styles slightly
-    const formattedText = text
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/\n/g, '<br>');
+    // Enhanced Markdown Parser
+    const parseMarkdown = (txt) => {
+        return txt
+            .replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold my-2">$1</h3>')
+            .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold my-2">$1</h2>')
+            .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold my-2">$1</h1>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/`(.*?)`/g, '<code class="bg-black/30 px-1 rounded font-mono text-xs">$1</code>')
+            .replace(/^\- (.*$)/gim, '<li class="ml-4 list-disc">$1</li>')
+            .replace(/^\d+\. (.*$)/gim, '<li class="ml-4 list-decimal">$1</li>')
+            .replace(/\n/g, '<br>');
+    };
+
+    const copyBtnHtml = !isUser ? `
+        <button onclick="navigator.clipboard.writeText(\`${text.replace(/`/g, '\\`')}\`)" 
+                class="absolute top-2 right-2 p-1 text-slate-500 hover:text-white transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+        </button>` : '';
 
     bubble.innerHTML = isUser
       ? `
         <div class="p-4 bg-cyan-950/45 border border-cyan-500/25 rounded-2xl rounded-tr-none text-sm text-slate-200 leading-relaxed shadow-md">
-          <p>${formattedText}</p>
+          <p>${parseMarkdown(text)}</p>
         </div>
-        <div class="w-8 h-8 rounded-full bg-cyan-600/30 border border-cyan-400/50 flex items-center justify-center shrink-0">
-          🧑‍🎓
-        </div>
+        <div class="w-8 h-8 rounded-full bg-cyan-600/30 border border-cyan-400/50 flex items-center justify-center shrink-0">🧑‍🎓</div>
       `
       : `
-        <div class="w-8 h-8 rounded-full bg-indigo-600/30 border border-indigo-400/50 flex items-center justify-center shrink-0">
-          🤖
-        </div>
-        <div class="p-4 bg-indigo-950/30 border border-indigo-500/20 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed shadow-md">
-          <p>${formattedText}</p>
+        <div class="w-8 h-8 rounded-full bg-indigo-600/30 border border-indigo-400/50 flex items-center justify-center shrink-0">🤖</div>
+        <div class="relative p-4 bg-indigo-950/30 border border-indigo-500/20 rounded-2xl rounded-tl-none text-sm text-slate-200 leading-relaxed shadow-md">
+          ${copyBtnHtml}
+          <div class="ai-message-body">${parseMarkdown(text)}</div>
         </div>
       `;
 
+    bubble.classList.add('animate-fade-in');
     chatMessagesContainer.appendChild(bubble);
   }
 
