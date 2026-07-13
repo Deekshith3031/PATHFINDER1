@@ -25,7 +25,7 @@
   <!-- Navigation header (simple logo for landing) -->
   <header class="w-full z-20 py-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <div class="flex items-center">
-      <span class="text-2xl font-black bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-600 bg-clip-text text-transparent text-shadow-neon">
+      <span class="text-2xl font-black bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-600 bg-clip-text text-transparent text-shadow-neon animate-text-gradient bg-[length:200%_auto]">
         PathFinder 10
       </span>
     </div>
@@ -36,12 +36,12 @@
     
     <!-- Left Hero content section -->
     <div class="w-full lg:w-1/2 text-left space-y-6 lg:pr-8 animate-fade-in">
-      <div class="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1.5 rounded-full text-xs font-bold text-indigo-600">
+      <div class="inline-flex items-center space-x-2 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1.5 rounded-full text-xs font-bold text-indigo-600 animate-pulse">
         🎓 3D Career Navigator for Telangana Students
       </div>
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-indigo-950">
         Find Your Perfect <br>
-        <span class="bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-500 bg-clip-text text-transparent">Future Career</span>
+        <span class="bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-500 bg-clip-text text-transparent animate-text-gradient bg-[length:200%_auto]">Future Career</span>
       </h1>
       <p class="text-slate-600 text-sm md:text-base max-w-md leading-relaxed font-medium">
         Navigate an immersive virtual university mapping Telangana's Board of Intermediate (MPC/BiPC/CEC), Polytechnic Diplomas (TS POLYCET), and hands-on ITI Trades.
@@ -49,15 +49,15 @@
       
       <!-- Key Streams Metrics -->
       <div class="grid grid-cols-3 gap-4 border-t border-slate-200/60 pt-6 text-center sm:text-left max-w-md">
-        <div>
+        <div class="animate-fade-in-up animate-delay-100">
           <span class="block text-xl md:text-2xl font-black text-indigo-600">MPC/BiPC</span>
           <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Academics</span>
         </div>
-        <div>
+        <div class="animate-fade-in-up animate-delay-200">
           <span class="block text-xl md:text-2xl font-black text-cyan-600">Diploma</span>
           <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">TS POLYCET</span>
         </div>
-        <div>
+        <div class="animate-fade-in-up animate-delay-300">
           <span class="block text-xl md:text-2xl font-black text-emerald-600">ITI</span>
           <span class="text-xs text-slate-500 font-semibold uppercase tracking-wider">Trades</span>
         </div>
@@ -66,7 +66,7 @@
 
     <!-- Right Login Glass Card Container -->
     <div class="w-full lg:w-auto flex justify-center lg:justify-end perspective-1000 z-10">
-      <div id="auth-card" class="glass-card glow-indigo rounded-3xl p-8 md:p-10 w-full max-w-md preserve-3d">
+      <div id="auth-card" class="glass-card glow-indigo rounded-3xl p-8 md:p-10 w-full max-w-md preserve-3d animate-float">
         
         <!-- Welcome Logo inside card -->
         <div class="text-center mb-6 preserve-3d transform translate-z-10">
@@ -101,7 +101,7 @@
             <input type="password" id="auth-password" required placeholder="••••••••" class="w-full glass-input p-3 rounded-xl text-sm" autocomplete="current-password">
           </div>
 
-          <button type="submit" id="submit-btn" class="w-full py-3 mt-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-sm font-semibold rounded-xl transition duration-300 shadow-lg glow-hover-indigo transform hover:-translate-y-0.5">
+          <button type="submit" id="submit-btn" class="w-full py-3 mt-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-sm font-semibold rounded-xl transition duration-300 shadow-lg glow-hover-indigo transform hover:-translate-y-0.5 card-sweep">
             Sign In
           </button>
         </form>
@@ -122,7 +122,7 @@
         </div>
 
         <!-- Guest Fallback Button -->
-        <button id="guest-btn" class="w-full py-3 bg-gradient-to-r from-cyan-600 to-indigo-600 text-white text-sm font-semibold rounded-xl transition duration-300 glow-hover-cyan preserve-3d transform translate-z-10 hover:-translate-y-0.5">
+        <button id="guest-btn" class="w-full py-3 bg-gradient-to-r from-cyan-600 to-indigo-600 text-white text-sm font-semibold rounded-xl transition duration-300 glow-hover-cyan preserve-3d transform translate-z-10 hover:-translate-y-0.5 animate-pulse-button card-sweep">
           ⚡ Continue as Guest Student
         </button>
 
