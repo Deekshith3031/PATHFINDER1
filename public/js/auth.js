@@ -198,10 +198,12 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.add(brainGroup);
 
     // ------------------------------------------
-    // D. FLOATING GRADUATION CAPS & BOOKS
+    // D. FLOATING ACADEMIC & TECHNICAL ENTITIES (GRADUATION CAPS, BOOKS, GEARS & SCROLLS)
     // ------------------------------------------
     const books = [];
     const caps = [];
+    const gears = [];
+    const scrolls = [];
 
     // Spawn 4 floating books
     const bookColors = [0xef4444, 0x10b981, 0x06b2d2, 0xf59e0b];
@@ -255,6 +257,61 @@ document.addEventListener('DOMContentLoaded', () => {
       );
       scene.add(cap);
       caps.push(cap);
+    }
+
+    // Spawn 3 floating cogs/gears (for engineering/polytechnic theme)
+    for (let i = 0; i < 3; i++) {
+      const gear = new THREE.Group();
+      const hub = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.13, 0.13, 0.05, 8),
+        new THREE.MeshStandardMaterial({ color: 0x06b2d2, metalness: 0.8, roughness: 0.2 })
+      );
+      gear.add(hub);
+      
+      // Add teeth
+      for (let j = 0; j < 6; j++) {
+        const tooth = new THREE.Mesh(
+          new THREE.BoxGeometry(0.05, 0.03, 0.32),
+          new THREE.MeshStandardMaterial({ color: 0x0891b2, metalness: 0.8, roughness: 0.2 })
+        );
+        tooth.rotation.y = (j / 6) * Math.PI * 2;
+        gear.add(tooth);
+      }
+      
+      gear.position.set(
+        (Math.random() - 0.5) * 3.5,
+        0.4 + Math.random() * 1.5,
+        (Math.random() - 0.5) * 2.5
+      );
+      scene.add(gear);
+      gears.push(gear);
+    }
+
+    // Spawn 3 floating diploma scrolls
+    for (let i = 0; i < 3; i++) {
+      const scroll = new THREE.Group();
+      // Roll
+      const paper = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.03, 0.03, 0.24, 8),
+        new THREE.MeshStandardMaterial({ color: 0xfafaf9, roughness: 0.6 })
+      );
+      paper.rotation.z = Math.PI / 2;
+      scroll.add(paper);
+      // Tie Ribbon
+      const ribbon = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.033, 0.033, 0.04, 8),
+        new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3 })
+      );
+      ribbon.rotation.z = Math.PI / 2;
+      scroll.add(ribbon);
+
+      scroll.position.set(
+        (Math.random() - 0.5) * 3.5,
+        0.4 + Math.random() * 1.5,
+        (Math.random() - 0.5) * 2.5
+      );
+      scene.add(scroll);
+      scrolls.push(scroll);
     }
 
     // ------------------------------------------
@@ -321,6 +378,20 @@ document.addEventListener('DOMContentLoaded', () => {
         cap.position.y += Math.sin(time * 1.0 + idx * 1.8) * 0.0022;
         cap.rotation.y = time * 0.1 + idx;
         cap.rotation.z = Math.sin(time * 0.4 + idx) * 0.08;
+      });
+
+      // Floating gears/cogs rotation
+      gears.forEach((gear, idx) => {
+        gear.position.y += Math.sin(time * 0.8 + idx * 2.2) * 0.0018;
+        gear.rotation.y += 0.015 * (idx % 2 === 0 ? 1 : -1);
+        gear.rotation.x = time * 0.05 + idx * 0.2;
+      });
+
+      // Floating scrolls bobbing & spin
+      scrolls.forEach((scroll, idx) => {
+        scroll.position.y += Math.sin(time * 1.4 + idx * 1.5) * 0.0025;
+        scroll.rotation.x = time * 0.1 + idx;
+        scroll.rotation.z = Math.PI / 2 + Math.sin(time * 0.5 + idx) * 0.15;
       });
 
       // Slow drift stars
@@ -392,9 +463,31 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       window.location.href = 'dashboard.html';
     } catch (err) {
-      showAlert(err.message || 'Authentication failed. Please check your credentials.');
-      submitBtn.disabled = false;
-      submitBtn.innerText = isLoginMode ? 'Sign In' : 'Create Account';
+      console.error("Auth error caught:", err);
+      
+      // Smart Failover: If Firebase email auth provider is disabled
+      if (err.code === 'auth/operation-not-allowed' || 
+          (err.message && (err.message.includes('disabled') || err.message.includes('operation-not-allowed')))) {
+        
+        showAlert("⚠️ Firebase Email/Password is disabled in your Firebase console. We are logging you in via Local Sandbox Mode while you enable it!");
+        
+        setTimeout(() => {
+          const fallbackName = name || email.split('@')[0] || 'Student';
+          const guestData = { 
+            uid: 'guest_fallback_' + Date.now(), 
+            email: email, 
+            displayName: fallbackName, 
+            isGuest: true 
+          };
+          localStorage.setItem('p10_guest_user', JSON.stringify(guestData));
+          window.location.href = 'dashboard.html';
+        }, 3000);
+        
+      } else {
+        showAlert(err.message || 'Authentication failed. Please check your credentials.');
+        submitBtn.disabled = false;
+        submitBtn.innerText = isLoginMode ? 'Sign In' : 'Create Account';
+      }
     }
   });
 
