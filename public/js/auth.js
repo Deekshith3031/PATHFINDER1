@@ -57,118 +57,123 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.add(cyanLight);
 
     // ------------------------------------------
-    // A. STYLIZED MODERN SCHOOL BUILDING
+    // A. STYLIZED THINKING BOY & NEURAL BRAIN CHARACTER (ROTATES 360 DEGREES)
     // ------------------------------------------
-    const schoolGroup = new THREE.Group();
-    schoolGroup.position.set(1.6, -0.6, -0.8); // Offset to the right
+    const characterGroup = new THREE.Group();
+    characterGroup.position.set(-1.7, -0.6, 0.5); // Positioned left of the screen, next to the hero text
+    scene.add(characterGroup);
 
-    // Main classroom block (Stone textured beige box)
-    const buildingGeo = new THREE.BoxGeometry(1.8, 0.9, 1.1);
-    const buildingMat = new THREE.MeshStandardMaterial({
-      color: 0xf5efe6, // Cream Alabaster
-      metalness: 0.1,
-      roughness: 0.7
+    // 1. Core Group for the Boy Mesh
+    const boyGroup = new THREE.Group();
+    characterGroup.add(boyGroup);
+
+    const headMat = new THREE.MeshStandardMaterial({
+      color: 0xfecdd3, // Flesh pink skin
+      roughness: 0.6
     });
-    const buildingMesh = new THREE.Mesh(buildingGeo, buildingMat);
-    schoolGroup.add(buildingMesh);
 
-    // Roof (Triangular dark slate shape modeled using a 4-sided cylinder)
-    const roofGeo = new THREE.CylinderGeometry(0, 1.3, 0.6, 4);
-    const roofMat = new THREE.MeshStandardMaterial({
-      color: 0x1e293b, // Deep Charcoal Slate
-      metalness: 0.3,
-      roughness: 0.5
+    // Torso (Shirt)
+    const torsoGeo = new THREE.CylinderGeometry(0.24, 0.18, 0.6, 12);
+    const torsoMat = new THREE.MeshStandardMaterial({
+      color: 0x4f46e5, // Indigo shirt
+      roughness: 0.5,
+      metalness: 0.1
     });
-    const roofMesh = new THREE.Mesh(roofGeo, roofMat);
-    roofMesh.position.y = 0.72;
-    roofMesh.rotation.y = Math.PI / 4; // Align roof coordinates
-    schoolGroup.add(roofMesh);
+    const torso = new THREE.Mesh(torsoGeo, torsoMat);
+    torso.position.y = 0.3;
+    boyGroup.add(torso);
 
-    // Pillars (White cylinders)
-    const pillarGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.45, 8);
-    const pillarMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2 });
-    const pillarLeft = new THREE.Mesh(pillarGeo, pillarMat);
-    pillarLeft.position.set(-0.35, -0.225, 0.57);
-    const pillarRight = pillarLeft.clone();
-    pillarRight.position.x = 0.35;
-    schoolGroup.add(pillarLeft);
-    schoolGroup.add(pillarRight);
+    // Head
+    const headGeo = new THREE.SphereGeometry(0.2, 16, 16);
+    const head = new THREE.Mesh(headGeo, headMat);
+    head.position.y = 0.72;
+    boyGroup.add(head);
 
-    // Entry Step
-    const stepGeo = new THREE.BoxGeometry(0.9, 0.08, 0.25);
-    const stepMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0 });
-    const stepMesh = new THREE.Mesh(stepGeo, stepMat);
-    stepMesh.position.set(0, -0.41, 0.6);
-    schoolGroup.add(stepMesh);
+    // Neck
+    const neckGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.1, 8);
+    const neck = new THREE.Mesh(neckGeo, headMat);
+    neck.position.y = 0.6;
+    boyGroup.add(neck);
 
-    // Glass Windows
-    const windowGeo = new THREE.BoxGeometry(0.22, 0.32, 0.03);
-    const windowMat = new THREE.MeshStandardMaterial({
-      color: 0x06b2d2,
-      roughness: 0.1,
-      metalness: 0.9,
-      transparent: true,
-      opacity: 0.6
-    });
-    const w1 = new THREE.Mesh(windowGeo, windowMat);
-    w1.position.set(-0.6, 0.15, 0.56);
-    const w2 = w1.clone();
-    w2.position.x = 0.6;
-    schoolGroup.add(w1);
-    schoolGroup.add(w2);
+    // Hair
+    const hairGroup = new THREE.Group();
+    const hairMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 }); // Slate-dark hair
+    
+    // Top hair box
+    const hairTop = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.1, 0.24), hairMat);
+    hairTop.position.set(0, 0.85, 0);
+    hairGroup.add(hairTop);
+    
+    // Side hair blocks
+    const hairLeft = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.18, 0.24), hairMat);
+    hairLeft.position.set(-0.11, 0.78, 0.02);
+    hairGroup.add(hairLeft);
 
-    scene.add(schoolGroup);
+    const hairRight = hairLeft.clone();
+    hairRight.position.x = 0.11;
+    hairGroup.add(hairRight);
 
-    // ------------------------------------------
-    // B. ANIMATED STUDENTS (At the school steps)
-    // ------------------------------------------
-    const studentsGroup = new THREE.Group();
-    studentsGroup.position.copy(schoolGroup.position); // Align to school coordinates
+    // Front fringe
+    const hairFront = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.06, 0.06), hairMat);
+    hairFront.position.set(0, 0.81, 0.1);
+    hairGroup.add(hairFront);
 
-    function makeStudentMesh(shirtColor, posX, posZ) {
-      const student = new THREE.Group();
-      student.position.set(posX, -0.32, posZ);
+    boyGroup.add(hairGroup);
 
-      // Torso
-      const torsoGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.22, 8);
-      const torso = new THREE.Mesh(torsoGeo, new THREE.MeshStandardMaterial({ color: shirtColor }));
-      student.add(torso);
+    // Crossed Legs (sitting cross-legged pose on the floor)
+    const legMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6 }); // Grey trousers
+    const legGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.45, 8);
+    
+    const leftLeg = new THREE.Mesh(legGeo, legMat);
+    leftLeg.rotation.z = Math.PI / 2.2;
+    leftLeg.rotation.y = -Math.PI / 6;
+    leftLeg.position.set(-0.18, 0.06, 0.1);
+    boyGroup.add(leftLeg);
 
-      // Head
-      const headGeo = new THREE.SphereGeometry(0.055, 12, 12);
-      const head = new THREE.Mesh(headGeo, new THREE.MeshStandardMaterial({ color: 0xfecdd3 })); // flesh pink
-      head.position.y = 0.165;
-      student.add(head);
+    const rightLeg = new THREE.Mesh(legGeo, legMat);
+    rightLeg.rotation.z = -Math.PI / 2.2;
+    rightLeg.rotation.y = Math.PI / 6;
+    rightLeg.position.set(0.18, 0.06, 0.1);
+    boyGroup.add(rightLeg);
 
-      // Mini cap
-      const capCap = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.035, 0.035, 0.02, 10),
-        new THREE.MeshBasicMaterial({ color: 0x000000 })
-      );
-      capCap.position.y = 0.21;
-      student.add(capCap);
+    // Left Arm (Relaxed)
+    const armMat = new THREE.MeshStandardMaterial({ color: 0x4f46e5, roughness: 0.5 }); // Indigo sleeve
+    const armGeo = new THREE.CylinderGeometry(0.05, 0.05, 0.35, 8);
+    const forearmGeo = new THREE.CylinderGeometry(0.045, 0.045, 0.3, 8);
 
-      const capBoard = new THREE.Mesh(
-        new THREE.BoxGeometry(0.09, 0.005, 0.09),
-        new THREE.MeshBasicMaterial({ color: 0x000000 })
-      );
-      capBoard.position.y = 0.22;
-      student.add(capBoard);
+    const leftArmUpper = new THREE.Mesh(armGeo, armMat);
+    leftArmUpper.rotation.z = Math.PI / 6;
+    leftArmUpper.position.set(-0.28, 0.45, 0);
+    boyGroup.add(leftArmUpper);
 
-      return student;
-    }
+    const leftForearm = new THREE.Mesh(forearmGeo, armMat);
+    leftForearm.rotation.x = Math.PI / 4;
+    leftForearm.position.set(-0.31, 0.3, 0.1);
+    boyGroup.add(leftForearm);
 
-    const stud1 = makeStudentMesh(0x4f46e5, -0.15, 0.72); // Indigo student
-    const stud2 = makeStudentMesh(0x10b981, 0.15, 0.72);  // Green student
-    studentsGroup.add(stud1);
-    studentsGroup.add(stud2);
-    scene.add(studentsGroup);
+    // Right Arm (Thinking pose - hand touching chin)
+    const rightArmUpper = new THREE.Mesh(armGeo, armMat);
+    rightArmUpper.rotation.z = -Math.PI / 5;
+    rightArmUpper.rotation.y = -Math.PI / 4;
+    rightArmUpper.position.set(0.24, 0.42, 0.08);
+    boyGroup.add(rightArmUpper);
 
-    // ------------------------------------------
-    // C. ROTATING 3D NEURAL BRAIN
-    // ------------------------------------------
+    const rightForearm = new THREE.Mesh(forearmGeo, armMat);
+    rightForearm.rotation.x = -Math.PI / 2.5; // Angled upwards towards chin
+    rightForearm.rotation.y = -Math.PI / 6;
+    rightForearm.position.set(0.2, 0.52, 0.22);
+    boyGroup.add(rightForearm);
+
+    // Hand touching chin
+    const hand = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 8), headMat);
+    hand.position.set(0.1, 0.65, 0.18); // Positioned near chin
+    boyGroup.add(hand);
+
+    // 2. Rotating 3D Neural Brain Group (Positioned above the boy's head)
     const brainGroup = new THREE.Group();
-    brainGroup.position.set(-1.8, 0.8, 0); // Positioned left of the screen
+    brainGroup.position.set(0, 1.25, 0);
+    brainGroup.scale.set(0.55, 0.55, 0.55);
+    characterGroup.add(brainGroup);
 
     // Brain wireframe outline shell
     const brainShell = new THREE.Mesh(
@@ -195,7 +200,54 @@ document.addEventListener('DOMContentLoaded', () => {
     rightGlobe.position.x = 0.18;
     brainGroup.add(rightGlobe);
 
-    scene.add(brainGroup);
+    // 3. Orbiting Mathematical Formulas Sprites Group
+    const mathSymbols = ['√', 'π', 'Σ', 'x', '÷', '+', 'y=mx', 'a²+b²=c²'];
+    
+    function createMathSymbolTexture(symbol) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, 128, 128);
+      ctx.font = 'bold 44px "Poppins", sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(symbol, 64, 64);
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    const symbolGroup = new THREE.Group();
+    symbolGroup.position.set(0, 1.25, 0); // Center around the brain
+    characterGroup.add(symbolGroup);
+
+    const symbolSprites = [];
+    const symbolRadii = [];
+    const symbolAngles = [];
+    const symbolSpeeds = [];
+    const symbolYOffsets = [];
+
+    mathSymbols.forEach((sym, idx) => {
+      const texture = createMathSymbolTexture(sym);
+      const mat = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        color: new THREE.Color().setHSL(idx / mathSymbols.length, 0.95, 0.6)
+      });
+      const sprite = new THREE.Sprite(mat);
+      
+      const size = 0.28 + Math.random() * 0.12;
+      sprite.scale.set(size, size, 1);
+      
+      symbolGroup.add(sprite);
+      symbolSprites.push(sprite);
+      
+      symbolRadii.push(0.55 + Math.random() * 0.4);
+      symbolAngles.push((idx / mathSymbols.length) * Math.PI * 2);
+      symbolSpeeds.push(0.012 + Math.random() * 0.01);
+      symbolYOffsets.push((Math.random() - 0.5) * 0.3);
+    });
 
     // ------------------------------------------
     // D. FLOATING ACADEMIC & TECHNICAL ENTITIES (GRADUATION CAPS, BOOKS, GEARS & SCROLLS)
@@ -356,15 +408,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const time = clock.getElapsedTime();
 
-      // Brain spin & breathing pulse scale
+      // Rotate entire boy + brain + symbols group 360 degrees
+      characterGroup.rotation.y = time * 0.25;
+
+      // Brain breathing pulse scale
       brainGroup.rotation.y = time * 0.16;
       brainGroup.rotation.z = Math.sin(time * 0.15) * 0.1;
       const bScale = 1.0 + Math.sin(time * 1.8) * 0.06;
-      brainGroup.scale.setScalar(bScale);
+      brainGroup.scale.setScalar(bScale * 0.55);
 
-      // Student idle bobbing
-      stud1.position.y = -0.32 + Math.sin(time * 2.2) * 0.015;
-      stud2.position.y = -0.32 + Math.sin(time * 1.8 + 0.6) * 0.015;
+      // Orbiting math symbols
+      symbolSprites.forEach((sprite, idx) => {
+        symbolAngles[idx] += symbolSpeeds[idx];
+        const angle = symbolAngles[idx];
+        const rad = symbolRadii[idx];
+        sprite.position.x = Math.cos(angle) * rad;
+        sprite.position.z = Math.sin(angle) * rad;
+        sprite.position.y = symbolYOffsets[idx] + Math.sin(time * 1.5 + idx) * 0.06;
+      });
 
       // Floating books
       books.forEach((book, idx) => {
@@ -402,7 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
       camera.position.x = Math.sin(time * 0.05) * orbitRadius;
       camera.position.z = Math.cos(time * 0.05) * orbitRadius;
       camera.position.y = 1.2 + Math.sin(time * 0.03) * 0.45;
-      camera.lookAt(new THREE.Vector3(0, 0.1, 0));
+      camera.lookAt(new THREE.Vector3(-0.85, 0.25, 0));
 
       renderer.render(scene, camera);
     }
