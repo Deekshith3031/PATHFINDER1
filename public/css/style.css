@@ -68,8 +68,27 @@
   animation: text-gradient 4s linear infinite;
 }
 
+@keyframes glow-shift {
+  0% {
+    background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%) !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
+  }
+  33% {
+    background: linear-gradient(135deg, #0891b2 0%, #155e75 100%) !important;
+    box-shadow: 0 4px 15px rgba(8, 145, 178, 0.3) !important;
+  }
+  66% {
+    background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%) !important;
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3) !important;
+  }
+  100% {
+    background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%) !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
+  }
+}
+
 .animate-pulse-button {
-  animation: pulse-button 2s infinite ease-in-out;
+  animation: pulse-button 2s infinite ease-in-out, glow-shift 8s ease-in-out infinite !important;
 }
 
 .hover-scale {
@@ -465,6 +484,7 @@ button[type="submit"],
   border: none !important;
   font-weight: 600 !important;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  animation: glow-shift 8s ease-in-out infinite !important;
 }
 
 button[type="submit"]:hover,
@@ -484,6 +504,8 @@ button[type="submit"]:hover,
   box-shadow: 0 4px 14px rgba(21, 94, 117, 0.2) !important;
   border: none !important;
   color: #ffffff !important;
+  animation: glow-shift 8s ease-in-out infinite !important;
+  animation-delay: 2s !important;
 }
 #guest-btn:hover {
   background: linear-gradient(135deg, #06b2d2 0%, #0891b2 100%) !important;
